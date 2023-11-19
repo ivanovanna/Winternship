@@ -10,16 +10,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.io.FileWriter;
 
-
-
-
 public class Main {
     public static void main(String[] args) {
         Map<String, Player> players = new HashMap<>();
         Map<String, Match> matches = new HashMap<>();
         Map<String, Integer> casinoBalanceChanges = new HashMap<>();
 
-        // Read player_data.txt and match_data.txt files
         List<String> playerData = readFile("resource/player_data.txt");
         List<String> matchData = readFile("resource/match_data.txt");
 
