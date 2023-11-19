@@ -121,8 +121,8 @@ public class Main {
     }
 
     private static void processPlayerData(List<String> playerData, Map<String, Player> players,
-                                          List<String> illegitimatePlayers, Map<String, Match> matches,
-                                          Map<String, Integer> casinoBalanceChanges) {
+            List<String> illegitimatePlayers, Map<String, Match> matches,
+            Map<String, Integer> casinoBalanceChanges) {
         for (String line : playerData) {
             String[] parts = line.split(",");
             if (parts.length >= 4) {
@@ -134,12 +134,23 @@ public class Main {
                 Player player = players.get(playerId);
                 switch (operation) {
                     case "DEPOSIT":
-                        int depositAmount = Integer.parseInt(parts[3]);
-                        player.deposit(depositAmount);
+                        if (parts.length == 4) {
+                            int depositAmount = Integer.parseInt(parts[3]);
+                            player.deposit(depositAmount);
+                        } else {
+                            illegitimatePlayers.add(line);
+                        }
                         break;
                     case "WITHDRAW":
-                        int withdrawAmount = Integer.parseInt(parts[3]);
-                        if (!player.withdraw(withdrawAmount)) {
+                        if (parts.length == 4) {
+                            int withdrawAmount = Integer.parseInt(parts[3]);
+                            if (!player.withdraw(withdrawAmount)) {
+                                illegitimatePlayers.add(line);
+                            }
+                            if (player.getBalance() <= 0) {
+                                illegitimatePlayers.add(playerId + " LOSES: Balance reached zero or negative");
+                            }
+                        } else {
                             illegitimatePlayers.add(line);
                         }
                         break;
@@ -150,6 +161,9 @@ public class Main {
                             String chosenSide = parts[4];
                             player.placeBet(betAmount, matchId, chosenSide, matches);
                             casinoBalanceChanges.merge(matchId, -betAmount, Integer::sum);
+                            if (player.getBalance() <= 0) {
+                                illegitimatePlayers.add(playerId + " LOSES: Balance reached zero or negative");
+                            }
                         } else {
                             illegitimatePlayers.add(line);
                         }
@@ -161,6 +175,8 @@ public class Main {
             }
         }
     }
+
+
 
     // Calculate win rates for legitimate players
     private static Map<String, Double> calculateWinRates(Map<String, Player> players) {
