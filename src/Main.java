@@ -20,8 +20,8 @@ public class Main {
         Map<String, Integer> casinoBalanceChanges = new HashMap<>();
 
         // Read player_data.txt and match_data.txt files
-        List<String> playerData = readFile("src/player_data.txt");
-        List<String> matchData = readFile("src/match_data.txt");
+        List<String> playerData = readFile("resource/player_data.txt");
+        List<String> matchData = readFile("resource/match_data.txt");
 
         List<String> illegitimatePlayers = new ArrayList<>();
 
